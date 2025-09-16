@@ -1,0 +1,49 @@
+[package]
+name = "spi-error-test"
+version = "0.1.0"
+edition = "2024"
+
+resolver = "2"
+
+[dependencies]
+cortex-m = { version = "0.7.6", features = [
+    "inline-asm",
+    "critical-section-single-core",
+] }
+cortex-m-rt = "0.7.0"
+embassy-stm32 = { version = "0.4.0", features = [
+    "defmt",
+    "unstable-pac",
+    "stm32u5a5zj",
+    "time-driver-any",
+    "memory-x",
+] }
+embassy-executor = { version = "0.9.0", features = [
+    "arch-cortex-m",
+    "executor-thread",
+    "defmt",
+] }
+defmt = "1.0.1"
+defmt-rtt = "1.0.0"
+panic-probe = { version = "1.0.0", features = ["print-defmt"] }
+
+
+# Support debug info in release builds
+[profile.release]
+debug = "full"
+lto = "fat" # Performs “fat” LTO which attempts to perform optimizations across all crates within the dependency graph.
+opt-level = "z" # optimize for binary size, but also turn off loop vectorization
+
+[profile.dev]
+debug = "full"
+lto = "fat" # Performs “fat” LTO which attempts to perform optimizations across all crates within the dependency graph.
+opt-level = "z" # optimize for binary size, but also turn off loop vectorization
+
+
+[patch.crates-io]
+embassy-stm32 = { path = "../../embassy/embassy-stm32" }
+embassy-executor = { path = "../../embassy/embassy-executor" }
+embassy-futures = { path = "../../embassy/embassy-futures" }
+embassy-time = { path = "../../embassy/embassy-time" }
+embassy-usb = { path = "../../embassy/embassy-usb" }
+embassy-usb-driver = { path = "../../embassy/embassy-usb-driver" }
